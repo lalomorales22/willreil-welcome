@@ -1,0 +1,11 @@
+# ship.py logs every board's card password here — this file must never be committed
+labels.csv
+
+# arduino ide "export compiled binary" output
+build/
+*.bin
+*.elf
+*.map
+
+__pycache__/
+.DS_Store
