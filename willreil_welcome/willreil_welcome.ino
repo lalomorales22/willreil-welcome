@@ -4,7 +4,7 @@
 
   Flash this on every board before it ships. When the buyer plugs it in:
 
-    1. the board broadcasts its own wifi            ->  WillReil-7F3A
+    1. the board broadcasts its own wifi            ->  Reil-7F3A
     2. their phone joins with the password on the card
     3. the phone pops the "sign in to network" sheet (hotel-wifi style)
     4. that sheet IS this app: live chip stats, poke-the-LED, and
@@ -24,7 +24,7 @@
   SHIP (per board, ~20 seconds)
     Upload, open Serial Monitor @ 115200, press RESET (or type anything + Enter).
     The board prints:
-          SSID : WillReil-7F3A
+          SSID : Reil-7F3A
           PASS : 7K3M-9PXZ
     Write those two lines on the card in the box. That's the whole process.
     (ship.py in this folder does flash + label automatically, with a CSV log.)
@@ -38,7 +38,7 @@
     Hold BOOT for 5 s while running -> forgets the custom password, back to card.
 
   NETWORK
-    AP ip 4.3.2.1 / DNS hijack ("*" -> 4.3.2.1) / mDNS http://willreil.local
+    AP ip 4.3.2.1 / DNS hijack ("*" -> 4.3.2.1) / mDNS http://reil.local
     Any http:// address a phone tries lands here. https:// can't (by design).
 */
 
@@ -52,16 +52,16 @@
 #include <soc/soc_caps.h>
 
 // ================================ CONFIG ==================================
-#define BRAND             "Will Reil Industries"
-#define SSID_PREFIX       "WillReil"           // network shows up as WillReil-7F3A
-#define HOSTNAME          "willreil"           // http://willreil.local also works
+#define BRAND             "Reil Industries"
+#define SSID_PREFIX       "Reil"               // network shows up as Reil-7F3A
+#define HOSTNAME          "reil"               // http://reil.local also works
 #define CONTACT_X         "x.com/realwillreil"
-#define CONTACT_SITE      ""                   // e.g. "willreil.com"  ("" hides it)
-#define CONTACT_EMAIL     ""                   // e.g. "hi@willreil.com" ("" hides it)
+#define CONTACT_SITE      ""                   // e.g. "reilindustries.com"  ("" hides it)
+#define CONTACT_EMAIL     ""                   // e.g. "hi@reilindustries.com" ("" hides it)
 // (no double-quotes inside any of the strings above — they go straight into JSON)
 
 #define PER_UNIT_PASSWORD 1                    // 1 = unique password per board
-#define FIXED_PASSWORD    "willreil2026"       // only used when PER_UNIT_PASSWORD is 0
+#define FIXED_PASSWORD    "reilindustries"       // only used when PER_UNIT_PASSWORD is 0
 #define UNIT_SECRET       "wri-batch-2026"     // salt for per-unit passwords.
                                                // change it ONCE before the first batch,
                                                // then never — or old cards stop matching.

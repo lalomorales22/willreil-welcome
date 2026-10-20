@@ -226,7 +226,7 @@ idf.py build flash monitor</pre><button onclick="cp(this)">copy</button></div>
       <text x="54" y="143.5">7</text><text x="54" y="171.5">6</text><text x="54" y="199.5">5</text><text x="54" y="227.5">4</text><text x="54" y="255.5">3</text><text x="54" y="283.5">2</text><text x="54" y="311.5">1</text>
       <text id="svg-sda" x="54" y="339.5">0/SDA</text><text id="svg-scl" x="54" y="367.5">14/SCL</text>
       <text x="206" y="143.5" text-anchor="end">23</text><text x="206" y="171.5" text-anchor="end">22</text><text x="206" y="199.5" text-anchor="end">21</text><text x="206" y="227.5" text-anchor="end">20</text><text x="206" y="255.5" text-anchor="end">19</text><text x="206" y="283.5" text-anchor="end">18</text><text x="206" y="311.5" text-anchor="end">17</text><text x="206" y="339.5" text-anchor="end">16</text>
-      <text x="206" y="367.5" text-anchor="end" fill="#e8c268">5V</text><text x="206" y="395.5" text-anchor="end" fill="#e8c268">GND</text><text x="206" y="423.5" text-anchor="end" fill="#e8c268">3V3</text>
+      <text x="206" y="367.5" text-anchor="end" fill="#e8c268">3V3</text><text x="206" y="395.5" text-anchor="end" fill="#e8c268">GND</text><text x="206" y="423.5" text-anchor="end" fill="#e8c268">5V</text>
     </g>
 
     <rect x="28" y="388" width="30" height="40" rx="3" fill="#e9ecf2" stroke="#a9afbb" stroke-width="1.2"/>
@@ -237,7 +237,7 @@ idf.py build flash monitor</pre><button onclick="cp(this)">copy</button></div>
     <rect x="113" y="427" width="34" height="12" rx="6" fill="#6d727c"/>
     <text x="130" y="410" font-size="7.5" fill="#f1f4fa" text-anchor="middle" font-weight="700">USB-C</text>
 
-    <text id="svg-brand" x="130" y="250" font-size="11" fill="#f1f4fa" text-anchor="middle" font-weight="800" letter-spacing="1.5">WILL REIL</text>
+    <text id="svg-brand" x="130" y="250" font-size="11" fill="#f1f4fa" text-anchor="middle" font-weight="800" letter-spacing="1.5">REIL INDUSTRIES</text>
     <text id="svg-unit" x="130" y="265" font-size="8.5" fill="#f1f4fa" fill-opacity=".8" text-anchor="middle" letter-spacing="1.5">UNIT</text>
   </svg>
 

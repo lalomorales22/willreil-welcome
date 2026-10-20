@@ -2,9 +2,13 @@
 
 **it's alive.** — a welcome app that lives on every ESP32-C6 you ship. themed like the board: blue soldermask, white silkscreen, gold pads.
 
-plug the board in → it broadcasts its own wifi (`WillReil-7F3A`) → the buyer joins with the password on the card → their phone pops the "sign in to network" sheet, hotel-wifi style → that sheet *is* this app, served straight from the chip. no internet needed, no app store, nothing to install.
+plug the board in → it broadcasts its own wifi (`Reil-7F3A`) → the buyer joins with the password on the card → their phone pops the "sign in to network" sheet, hotel-wifi style → that sheet *is* this app, served straight from the chip. no internet needed, no app store, nothing to install.
 
 ![the portal on a phone](docs/portal.png)
+
+![the boards it ships on](docs/boards.jpg)
+
+*the boards: ESP32-C6-MINI-1, RESET | BOOT, LED on IO8, left header 7…1 then 0/SDA · 14/SCL, right header 23…16 then 3V3 · GND · 5V, I2C with a Qwiic jack. the page is themed after them.*
 
 ## what the buyer sees
 
@@ -22,7 +26,7 @@ plug the board in → it broadcasts its own wifi (`WillReil-7F3A`) → the buyer
 1. flash `willreil_welcome.ino` (same firmware on every board — nothing to edit per unit)
 2. open Serial Monitor @ 115200, press RESET (or type anything + Enter). the board prints:
    ```
-   SSID : WillReil-7F3A
+   SSID : Reil-7F3A
    PASS : 7K3M-9PXZ
    ```
 3. write those two lines on the card that goes in the box. done.
@@ -59,8 +63,8 @@ everything you'd ever touch is the block at the top of the `.ino`:
 | define | what |
 |---|---|
 | `BRAND` | shown in the eyebrow + serial banner |
-| `SSID_PREFIX` | network name prefix (`WillReil` → `WillReil-7F3A`) |
-| `HOSTNAME` | `http://willreil.local` |
+| `SSID_PREFIX` | network name prefix (`Reil` → `Reil-7F3A`) |
+| `HOSTNAME` | `http://reil.local` |
 | `CONTACT_X` / `CONTACT_SITE` / `CONTACT_EMAIL` | footer. `""` hides one. |
 | `PER_UNIT_PASSWORD`, `FIXED_PASSWORD`, `UNIT_SECRET` | see above |
 | `BOARD_SDA`, `BOARD_SCL` | what the silkscreen says (0 / 14 on these boards). `-1` = the core's default. |

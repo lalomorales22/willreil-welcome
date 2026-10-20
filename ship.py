@@ -84,7 +84,7 @@ def read_label(port, timeout=25):
 
 def print_label(ssid, pw, mac, ip="4.3.2.1"):
     w = 34
-    rows = ["WILL REIL INDUSTRIES", "", f"wifi: {ssid}", f"pass: {pw}", "", f"then open http://{ip}", f"unit {mac}"]
+    rows = ["REIL INDUSTRIES", "", f"wifi: {ssid}", f"pass: {pw}", "", f"then open http://{ip}", f"unit {mac}"]
     print("\n+" + "-" * w + "+")
     for r in rows:
         print("|  " + r.ljust(w - 2) + "|")
@@ -101,7 +101,7 @@ def log(ssid, pw, mac):
 
 
 def main():
-    ap = argparse.ArgumentParser(description="flash + label a Will Reil ESP32-C6")
+    ap = argparse.ArgumentParser(description="flash + label a Reil Industries ESP32-C6")
     ap.add_argument("--port", help="serial port (auto-detected if omitted)")
     ap.add_argument("--bin", type=pathlib.Path, default=DEFAULT_BIN, help="merged .bin to flash")
     ap.add_argument("--no-flash", action="store_true", help="skip flashing, just read the label")
