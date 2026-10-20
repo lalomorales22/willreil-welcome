@@ -3,6 +3,8 @@
 // function prototypes and chokes on the JavaScript "function foo(){" inside the
 // page. headers are left alone. edit the copy/colors/sections however you like —
 // no external assets allowed (there is no internet on the board's network).
+//
+// theme: the board itself. blue soldermask, white silkscreen, gold pads.
 #pragma once
 #include <Arduino.h>
 
@@ -15,83 +17,95 @@ const char INDEX_HTML[] PROGMEM = R"~~~(<!doctype html>
 <link rel="icon" href="data:,">
 <title>your ESP32-C6</title>
 <style>
-:root{--bg:#0c0c0e;--panel:#131317;--line:#26262d;--ink:#ecebe6;--mute:#8f8e88;--acc:#ffb020;--ok:#3ddc84;--bad:#ff5a5a;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace}
+:root{
+  --pcb:#1c3a86;--pcb-deep:#102457;--pcb-ink:#0a1838;--pcb-edge:#2d56b4;
+  --silk:#f1f4fa;--silk-70:rgba(241,244,250,.72);--silk-45:rgba(241,244,250,.45);--silk-20:rgba(241,244,250,.2);
+  --gold:#e8c268;--gold-dim:#b8964a;--ok:#5cf0a2;--bad:#ff7a7a;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace
+}
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%;background:var(--bg)}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;padding:env(safe-area-inset-top) 0 calc(28px + env(safe-area-inset-bottom))}
+html{-webkit-text-size-adjust:100%;background:var(--pcb)}
+body{margin:0;color:var(--silk);font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;padding:env(safe-area-inset-top) 0 calc(28px + env(safe-area-inset-bottom));
+  background:var(--pcb) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='.07' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M12 34h52l22 22v44'/%3E%3Cpath d='M188 166h-52l-22-22v-44'/%3E%3Cpath d='M34 188v-34l22-22h34'/%3E%3Cpath d='M166 12v34l-22 22h-34'/%3E%3C/g%3E%3Cg fill='%23ffffff' fill-opacity='.09'%3E%3Ccircle cx='12' cy='34' r='4.5'/%3E%3Ccircle cx='86' cy='100' r='4.5'/%3E%3Ccircle cx='188' cy='166' r='4.5'/%3E%3Ccircle cx='114' cy='100' r='4.5'/%3E%3Ccircle cx='34' cy='188' r='4.5'/%3E%3Ccircle cx='90' cy='132' r='4.5'/%3E%3Ccircle cx='166' cy='12' r='4.5'/%3E%3Ccircle cx='110' cy='68' r='4.5'/%3E%3C/g%3E%3C/svg%3E") fixed}
 .wrap{max-width:560px;margin:0 auto;padding:0 16px}
-header{padding:30px 0 10px;border-bottom:1px solid var(--line)}
-.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--acc);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.dot{width:9px;height:9px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 0 rgba(61,220,132,.55);animation:pulse 1.8s ease-out infinite;flex:none}
+header{padding:30px 0 12px;border-bottom:1.5px dashed var(--silk-45)}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.silk{display:inline-block;border:1.5px solid var(--silk);border-radius:4px;padding:2px 8px;color:var(--silk);line-height:1.4}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 0 rgba(92,240,162,.6);animation:pulse 1.8s ease-out infinite;flex:none}
 .dot.off{background:var(--bad);animation:none}
-@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(61,220,132,.55)}100%{box-shadow:0 0 0 12px rgba(61,220,132,0)}}
-h1{font-size:clamp(44px,14vw,72px);line-height:.92;letter-spacing:-.04em;margin:16px 0 12px;font-weight:800}
-h1 span{color:var(--acc)}
-.lede{color:var(--mute);margin:0 0 20px;font-size:17px}
-.lede b{color:var(--ink);font-weight:600}
-section{border:1px solid var(--line);background:var(--panel);border-radius:16px;padding:18px 16px;margin:14px 0}
-.lab{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--acc);margin:0 0 12px}
-h2{font-size:22px;letter-spacing:-.02em;margin:0 0 8px}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(92,240,162,.6)}100%{box-shadow:0 0 0 12px rgba(92,240,162,0)}}
+h1{font-size:clamp(44px,14vw,72px);line-height:.92;letter-spacing:-.04em;margin:16px 0 12px;font-weight:800;color:#fff}
+h1 span{color:var(--gold)}
+.lede{color:var(--silk-70);margin:0 0 20px;font-size:17px}
+.lede b{color:#fff;font-weight:600}
+section{position:relative;border:1.5px solid var(--silk-70);background:rgba(8,20,58,.62);border-radius:14px;padding:20px 16px 18px;margin:16px 0}
+section:before,section:after{content:"";position:absolute;width:9px;height:9px;border-radius:50%;border:2px solid var(--silk);background:var(--pcb-ink)}
+section:before{top:6px;left:6px}section:after{bottom:6px;right:6px}
+.lab{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;margin:0 0 12px;color:var(--gold)}
+.lab b{font-weight:500;color:var(--silk);border:1.2px solid var(--silk-70);border-radius:3px;padding:1px 6px;margin-right:6px}
+h2{font-size:22px;letter-spacing:-.02em;margin:0 0 8px;color:#fff}
 p{margin:0 0 10px}
-.muted{color:var(--mute)}
+.muted{color:var(--silk-70)}
 .small{font-size:14px}
 dl{margin:0;display:grid;grid-template-columns:auto 1fr;row-gap:7px;column-gap:10px;font-size:15px;align-items:baseline}
-dt{color:var(--mute);white-space:nowrap}
+dt{color:var(--silk-70);white-space:nowrap}
 dd{margin:0;font-family:var(--mono);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;position:relative}
-dd:before{content:"";position:absolute;left:0;right:0;bottom:6px;border-bottom:1px dotted var(--line);z-index:0}
-dd span{position:relative;background:var(--panel);padding-left:8px;z-index:1}
+dd:before{content:"";position:absolute;left:0;right:0;bottom:6px;border-bottom:1.5px dotted var(--silk-20);z-index:0}
+dd span{position:relative;background:#0e1f4f;padding-left:8px;z-index:1}
 .row{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0 8px;align-items:center}
-button{appearance:none;-webkit-appearance:none;border:1px solid var(--line);background:#1b1b21;color:var(--ink);font:inherit;font-weight:600;padding:11px 16px;border-radius:999px;cursor:pointer}
+button{appearance:none;-webkit-appearance:none;border:2px solid var(--gold-dim);background:var(--pcb-ink);color:var(--silk);font:inherit;font-weight:600;padding:10px 16px;border-radius:999px;cursor:pointer}
 button:active{transform:translateY(1px)}
-button.acc{background:var(--acc);border-color:var(--acc);color:#1a1200}
-button.danger{border-color:#5a2a2a;color:#ff8a8a;background:transparent}
-.sw{width:44px;height:44px;border-radius:50%;padding:0;border:2px solid var(--line)}
-.sw.on{border-color:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.18)}
+button.acc{background:var(--gold);border-color:var(--gold);color:#1a1400}
+button.danger{border-color:#8a4a4a;color:#ffb0b0;background:transparent}
+.sw{width:44px;height:44px;border-radius:50%;padding:0;border:3px solid var(--pcb-ink);box-shadow:0 0 0 2px var(--gold-dim)}
+.sw.on{box-shadow:0 0 0 3px var(--gold),0 0 14px rgba(232,194,104,.5)}
 .tabs{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 14px}
-.tabs button{padding:8px 13px;font-size:14px;background:transparent}
-.tabs button.on{background:var(--ink);color:#0c0c0e;border-color:var(--ink)}
+.tabs button{padding:8px 13px;font-size:14px;background:transparent;border-color:var(--silk-45)}
+.tabs button.on{background:var(--silk);color:var(--pcb-ink);border-color:var(--silk)}
 .pane{display:none}.pane.on{display:block}
 ol{padding-left:22px;margin:0}ol li{margin:0 0 10px}
 code,pre{font-family:var(--mono);font-size:13.5px}
-code{background:#1b1b21;padding:2px 6px;border-radius:6px;white-space:nowrap}
-pre{background:#0a0a0c;border:1px solid var(--line);border-radius:10px;padding:12px;overflow:auto;margin:8px 0 10px;white-space:pre;-webkit-overflow-scrolling:touch}
+code{background:var(--pcb-ink);padding:2px 6px;border-radius:5px;white-space:nowrap;color:#fff}
+pre{background:var(--pcb-ink);border:1.5px solid var(--silk-20);border-radius:10px;padding:12px;overflow:auto;margin:8px 0 10px;white-space:pre;-webkit-overflow-scrolling:touch;color:#fff}
 pre.wrap{white-space:pre-wrap;word-break:break-all}
 .cp{position:relative}
-.cp button{position:absolute;top:14px;right:6px;padding:5px 10px;font-size:12px;background:#1b1b21}
+.cp button{position:absolute;top:14px;right:6px;padding:4px 10px;font-size:12px;background:var(--pcb-deep)}
 .cp pre{padding-right:76px}
-input[type=text]{width:100%;font:inherit;background:#0a0a0c;border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:12px 14px;margin:0 0 10px;outline:none}
-input:focus{border-color:var(--acc)}
-.msg{font-family:var(--mono);font-size:13px;color:var(--mute);min-height:20px;margin-top:6px}
+input[type=text]{width:100%;font:inherit;background:var(--pcb-ink);border:1.5px solid var(--silk-45);color:#fff;border-radius:10px;padding:12px 14px;margin:0 0 10px;outline:none}
+input:focus{border-color:var(--gold)}
+.msg{font-family:var(--mono);font-size:13px;color:var(--silk-70);min-height:20px;margin-top:6px}
 .msg.ok{color:var(--ok)}.msg.bad{color:var(--bad)}
-.warn{border-left:3px solid var(--acc);padding:8px 12px;background:#1a150a;border-radius:0 10px 10px 0;font-size:14px;margin:12px 0}
+.warn{border-left:3px solid var(--gold);padding:8px 12px;background:rgba(232,194,104,.1);border-radius:0 10px 10px 0;font-size:14px;margin:12px 0}
+.board{display:block;width:230px;max-width:100%;margin:6px auto 14px;filter:drop-shadow(0 10px 24px rgba(0,0,0,.35))}
+.board text{font-family:var(--mono)}
 .pingrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:0 0 12px}
-.pin{background:#0a0a0c;border:1px solid var(--line);border-radius:10px;padding:9px 12px;display:flex;flex-direction:column;gap:1px}
-.pin b{font-family:var(--mono);font-weight:500;color:var(--mute);font-size:13px}
-.pin span{font-family:var(--mono);font-size:18px;color:var(--acc)}
-.pin.wide{grid-column:1/-1}
-footer{text-align:center;color:var(--mute);font-size:13px;padding:20px 0 0;line-height:1.9}
-footer .mono{font-family:var(--mono);color:var(--ink)}
-#overlay{display:none;position:fixed;inset:0;background:rgba(12,12,14,.96);padding:40px 24px;text-align:center}
+.pin{background:var(--pcb-ink);border:1.5px solid var(--silk-20);border-radius:10px;padding:9px 12px;display:flex;flex-direction:column;gap:1px}
+.pin b{font-family:var(--mono);font-weight:500;color:var(--silk-70);font-size:12.5px;letter-spacing:.04em}
+.pin span{font-family:var(--mono);font-size:18px;color:var(--gold)}
+footer{text-align:center;color:var(--silk-70);font-size:13px;padding:20px 0 0;line-height:1.9}
+.mono{font-family:var(--mono);color:#fff}
+.plate{display:inline-block;border:1.5px solid var(--silk-70);border-radius:6px;padding:8px 14px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--silk);margin:0 0 8px}
+#overlay{display:none;position:fixed;inset:0;background:rgba(10,24,56,.97);padding:40px 24px;text-align:center}
 #overlay.on{display:flex;flex-direction:column;justify-content:center;gap:12px}
-#overlay .big{font-family:var(--mono);font-size:26px;color:var(--acc);word-break:break-all}
+#overlay .big{font-family:var(--mono);font-size:26px;color:var(--gold);word-break:break-all}
 </style>
 </head>
 <body>
 <div class="wrap">
 
 <header>
-  <div class="eyebrow"><span class="dot" id="dot"></span><span id="brand">&nbsp;</span><span>&middot; unit <span id="unit">&mdash;</span></span></div>
+  <div class="eyebrow"><span class="dot" id="dot"></span><span class="silk" id="brand">&nbsp;</span><span class="silk">unit <span id="unit">&mdash;</span></span></div>
   <h1>it's <span>alive.</span></h1>
   <p class="lede">you're connected straight to the chip. there's no internet on this network &mdash; it's just you and your new <b>ESP32&#8209;C6</b>, and this page is being served from it.</p>
 </header>
 
 <section>
-  <p class="lab">01 &middot; vitals &middot; live</p>
+  <p class="lab"><b>01</b>vitals &middot; live</p>
   <dl id="vitals"></dl>
 </section>
 
 <section>
-  <p class="lab">02 &middot; say hi</p>
+  <p class="lab"><b>02</b>say hi</p>
   <h2>tap a color.</h2>
   <p class="muted small" id="ledhint">the LED on the board is wired to these buttons.</p>
   <div class="row" id="swatches"></div>
@@ -103,7 +117,7 @@ footer .mono{font-family:var(--mono);color:var(--ink)}
 </section>
 
 <section>
-  <p class="lab">03 &middot; flash your first program</p>
+  <p class="lab"><b>03</b>flash your first program</p>
   <h2>make it yours.</h2>
   <p class="muted small">this welcome app lives in the chip's flash. the first time you upload your own code it's gone &mdash; that's the point. pick your tool:</p>
   <div class="tabs">
@@ -164,10 +178,71 @@ idf.py build flash monitor</pre><button onclick="cp(this)">copy</button></div>
 </section>
 
 <section>
-  <p class="lab">04 &middot; pins</p>
+  <p class="lab"><b>04</b>pins</p>
   <h2>where things are.</h2>
-  <p class="muted small">defaults reported live by the board's own firmware. almost any signal can be moved to almost any GPIO via the pin matrix &mdash; these are just where the Arduino core puts them if you don't say otherwise.</p>
+  <p class="muted small">this is your board. the LED in the drawing shows whatever color the real one is showing right now.</p>
+
+  <svg class="board" viewBox="0 0 260 480" xmlns="http://www.w3.org/2000/svg" aria-label="board pinout">
+    <rect x="18" y="12" width="224" height="456" rx="16" fill="#2148a2" stroke="#f1f4fa" stroke-width="2"/>
+    <g fill="#0f2050" stroke="#f1f4fa" stroke-width="2">
+      <circle cx="36" cy="30" r="9"/><circle cx="224" cy="30" r="9"/><circle cx="36" cy="450" r="9"/><circle cx="224" cy="450" r="9"/>
+    </g>
+    <g fill="#0a1638"><circle cx="36" cy="30" r="4"/><circle cx="224" cy="30" r="4"/><circle cx="36" cy="450" r="4"/><circle cx="224" cy="450" r="4"/></g>
+    <g fill="none" stroke="#f1f4fa" stroke-opacity=".28" stroke-width="1.5" stroke-linecap="round">
+      <path d="M70 286h34l14 14v36"/><path d="M190 298h-30l-12 12v26"/><path d="M118 390h24"/>
+    </g>
+    <g fill="#f1f4fa" fill-opacity=".35"><circle cx="118" cy="336" r="2.5"/><circle cx="148" cy="336" r="2.5"/><circle cx="118" cy="390" r="2.5"/><circle cx="142" cy="390" r="2.5"/></g>
+
+    <rect x="72" y="24" width="116" height="106" rx="4" fill="#15161a" stroke="#6b6f78" stroke-width="1.5"/>
+    <rect x="72" y="24" width="116" height="24" rx="4" fill="#2b2c33"/>
+    <text x="130" y="72" font-size="7.5" fill="#9aa0ad" text-anchor="middle" letter-spacing="1">ESPRESSIF</text>
+    <text x="130" y="88" font-size="9.5" fill="#e6e8ee" text-anchor="middle" font-weight="700">ESP32-C6-MINI-1</text>
+    <rect x="96" y="100" width="68" height="18" rx="2" fill="none" stroke="#3a3c44" stroke-width="1" stroke-dasharray="2 2"/>
+
+    <g>
+      <rect x="80" y="144" width="22" height="22" rx="3" fill="#2b2d33" stroke="#7d8089" stroke-width="1.2"/><circle cx="91" cy="155" r="6" fill="#4a4d55"/>
+      <rect x="158" y="144" width="22" height="22" rx="3" fill="#2b2d33" stroke="#7d8089" stroke-width="1.2"/><circle cx="169" cy="155" r="6" fill="#4a4d55"/>
+      <rect x="106" y="146" width="48" height="16" rx="3" fill="none" stroke="#f1f4fa" stroke-width="1.2"/>
+      <text x="130" y="157.5" font-size="7" fill="#f1f4fa" text-anchor="middle" font-weight="700">RESET | BOOT</text>
+      <rect x="103" y="174" width="54" height="16" rx="3" fill="none" stroke="#f1f4fa" stroke-width="1.2"/>
+      <text x="130" y="185.5" font-size="9" fill="#f1f4fa" text-anchor="middle" font-weight="700">ESP32-C6</text>
+    </g>
+
+    <g>
+      <rect x="150" y="206" width="14" height="14" rx="2" fill="#0b1838" stroke="#8a8f99" stroke-width="1.2"/>
+      <circle id="svg-led" cx="157" cy="213" r="5" fill="#ffaa28"/>
+      <text id="svg-ledlbl" x="172" y="216.5" font-size="8.5" fill="#f1f4fa" font-weight="700">IO8</text>
+    </g>
+
+    <g fill="#0f2050" stroke="#e8c268" stroke-width="2.5">
+      <circle cx="40" cy="140" r="7"/><circle cx="40" cy="168" r="7"/><circle cx="40" cy="196" r="7"/><circle cx="40" cy="224" r="7"/><circle cx="40" cy="252" r="7"/><circle cx="40" cy="280" r="7"/><circle cx="40" cy="308" r="7"/><circle cx="40" cy="336" r="7"/><circle cx="40" cy="364" r="7"/>
+      <circle cx="220" cy="140" r="7"/><circle cx="220" cy="168" r="7"/><circle cx="220" cy="196" r="7"/><circle cx="220" cy="224" r="7"/><circle cx="220" cy="252" r="7"/><circle cx="220" cy="280" r="7"/><circle cx="220" cy="308" r="7"/><circle cx="220" cy="336" r="7"/><circle cx="220" cy="364" r="7"/><circle cx="220" cy="392" r="7"/><circle cx="220" cy="420" r="7"/>
+    </g>
+    <g fill="#061030">
+      <circle cx="40" cy="140" r="3"/><circle cx="40" cy="168" r="3"/><circle cx="40" cy="196" r="3"/><circle cx="40" cy="224" r="3"/><circle cx="40" cy="252" r="3"/><circle cx="40" cy="280" r="3"/><circle cx="40" cy="308" r="3"/><circle cx="40" cy="336" r="3"/><circle cx="40" cy="364" r="3"/>
+      <circle cx="220" cy="140" r="3"/><circle cx="220" cy="168" r="3"/><circle cx="220" cy="196" r="3"/><circle cx="220" cy="224" r="3"/><circle cx="220" cy="252" r="3"/><circle cx="220" cy="280" r="3"/><circle cx="220" cy="308" r="3"/><circle cx="220" cy="336" r="3"/><circle cx="220" cy="364" r="3"/><circle cx="220" cy="392" r="3"/><circle cx="220" cy="420" r="3"/>
+    </g>
+    <g font-size="9" fill="#f1f4fa" font-weight="700">
+      <text x="54" y="143.5">7</text><text x="54" y="171.5">6</text><text x="54" y="199.5">5</text><text x="54" y="227.5">4</text><text x="54" y="255.5">3</text><text x="54" y="283.5">2</text><text x="54" y="311.5">1</text>
+      <text id="svg-sda" x="54" y="339.5">0/SDA</text><text id="svg-scl" x="54" y="367.5">14/SCL</text>
+      <text x="206" y="143.5" text-anchor="end">23</text><text x="206" y="171.5" text-anchor="end">22</text><text x="206" y="199.5" text-anchor="end">21</text><text x="206" y="227.5" text-anchor="end">20</text><text x="206" y="255.5" text-anchor="end">19</text><text x="206" y="283.5" text-anchor="end">18</text><text x="206" y="311.5" text-anchor="end">17</text><text x="206" y="339.5" text-anchor="end">16</text>
+      <text x="206" y="367.5" text-anchor="end" fill="#e8c268">5V</text><text x="206" y="395.5" text-anchor="end" fill="#e8c268">GND</text><text x="206" y="423.5" text-anchor="end" fill="#e8c268">3V3</text>
+    </g>
+
+    <rect x="28" y="388" width="30" height="40" rx="3" fill="#e9ecf2" stroke="#a9afbb" stroke-width="1.2"/>
+    <g fill="#9aa0ad"><rect x="33" y="394" width="4" height="22"/><rect x="40" y="394" width="4" height="22"/><rect x="47" y="394" width="4" height="22"/><rect x="54" y="394" width="2" height="22"/></g>
+    <text x="43" y="438" font-size="7.5" fill="#f1f4fa" text-anchor="middle" font-weight="700">I2C</text>
+
+    <rect x="104" y="416" width="52" height="34" rx="9" fill="#c8ccd4" stroke="#8a8f99" stroke-width="1.5"/>
+    <rect x="113" y="427" width="34" height="12" rx="6" fill="#6d727c"/>
+    <text x="130" y="410" font-size="7.5" fill="#f1f4fa" text-anchor="middle" font-weight="700">USB-C</text>
+
+    <text id="svg-brand" x="130" y="250" font-size="11" fill="#f1f4fa" text-anchor="middle" font-weight="800" letter-spacing="1.5">WILL REIL</text>
+    <text id="svg-unit" x="130" y="265" font-size="8.5" fill="#f1f4fa" fill-opacity=".8" text-anchor="middle" letter-spacing="1.5">UNIT</text>
+  </svg>
+
   <div class="pingrid" id="pins"></div>
+  <p class="muted small">the white 4-pin jack next to <span class="mono">0/SDA &middot; 14/SCL</span> is the I2C port (Qwiic / STEMMA QT style): plug a sensor straight in, no soldering. in Arduino that's <code id="wire">Wire.begin(0, 14);</code></p>
   <div id="c6notes">
     <div class="warn"><b>strapping pins:</b> GPIO 4, 5, 8, 9 and 15 get read by the chip at reset to decide how to boot. leave them floating or pulled correctly during power-up or you'll get weird boot behavior. GPIO 9 is the BOOT button.</div>
     <p class="muted small">analog in: GPIO 0&ndash;6 (ADC1). native USB: GPIO 12 (D&minus;) and 13 (D+) &mdash; that's your USB&#8209;C port, don't repurpose them. UART0 lives on GPIO 16 (TX) / 17 (RX). RISC&#8209;V core at 160 MHz plus a 20 MHz low-power core, 512 KB SRAM, Wi&#8209;Fi 6, Bluetooth 5 LE, and 802.15.4 for Zigbee / Thread.</p>
@@ -175,7 +250,7 @@ idf.py build flash monitor</pre><button onclick="cp(this)">copy</button></div>
 </section>
 
 <section>
-  <p class="lab">05 &middot; this wifi</p>
+  <p class="lab"><b>05</b>this wifi</p>
   <h2>make the password yours.</h2>
   <p class="muted small">the password on the card is fine, but you can change it. the board restarts and you reconnect with the new one. forgot it? hold <b>BOOT</b> for 5 seconds and it goes back to the card password.</p>
   <input type="text" id="pw" placeholder="new password (8 to 63 characters)" autocomplete="off" autocapitalize="off" spellcheck="false">
@@ -187,7 +262,7 @@ idf.py build flash monitor</pre><button onclick="cp(this)">copy</button></div>
 </section>
 
 <section>
-  <p class="lab">06 &middot; when you're done here</p>
+  <p class="lab"><b>06</b>when you're done here</p>
   <h2>stop the sign-in popup.</h2>
   <p class="muted small">your phone thinks this is hotel wifi and will keep asking you to "sign in". tap below and it'll stop. you stay connected, and you can always come back to this page at <span class="mono" id="urlhint">http://4.3.2.1</span> (http, not https &mdash; there's no internet to get a certificate from).</p>
   <div class="row"><button class="acc" onclick="release()">got it, stop asking</button></div>
@@ -195,6 +270,7 @@ idf.py build flash monitor</pre><button onclick="cp(this)">copy</button></div>
 </section>
 
 <footer>
+  <div class="plate" id="plate">property of whoever's holding it</div>
   <div id="contact"></div>
   <div>the links above are text on purpose &mdash; you're on the board's network, so nothing on the internet loads. switch back to your normal wifi and type them in.</div>
   <div class="muted">&#9679; reflash <span class="mono">willreil_welcome.ino</span> any time to get this page back</div>
@@ -252,8 +328,25 @@ function render(s){
     pin('SPI MOSI', p.mosi) + pin('SPI MISO', p.miso) +
     pin('SPI SCK', p.sck) + pin('SPI SS', p.ss) +
     pin('BOOT button', p.boot) +
-    pin(s.led.kind == 1 ? 'RGB LED (WS2812)' : s.led.kind == 2 ? 'LED' : 'LED', s.led.kind == 3 ? 'none' : s.led.pin);
+    pin(s.led.kind == 1 ? 'RGB LED (WS2812)' : 'LED', s.led.kind == 3 ? 'none' : s.led.pin);
+  $('wire').textContent = 'Wire.begin(' + p.sda + ', ' + p.scl + ');';
   $('c6notes').style.display = (s.chip.indexOf('C6') >= 0) ? '' : 'none';
+
+  // the board drawing
+  $('svg-sda').textContent = p.sda + '/SDA';
+  $('svg-scl').textContent = p.scl + '/SCL';
+  $('svg-ledlbl').textContent = s.led.kind == 3 ? '' : 'IO' + s.led.pin;
+  var bn = s.brand.toUpperCase(); $('svg-brand').textContent = bn;
+  $('svg-brand').setAttribute('font-size', bn.length > 20 ? 6.5 : bn.length > 12 ? 7.5 : 11);
+  $('svg-brand').setAttribute('letter-spacing', bn.length > 12 ? 1 : 1.5);
+  $('svg-unit').textContent = 'UNIT ' + s.unit;
+  var ledEl = $('svg-led');
+  if (s.led.fx == 'rainbow') { ledEl.setAttribute('fill', '#ff3cac'); ledEl.style.animation = 'spin 3.6s linear infinite'; }
+  else {
+    ledEl.style.animation = '';
+    var off = !(s.led.r | s.led.g | s.led.b);
+    ledEl.setAttribute('fill', off ? '#1a2350' : 'rgb(' + s.led.r + ',' + s.led.g + ',' + s.led.b + ')');
+  }
 
   if (!TXT) {
     TXT = 1;
@@ -262,6 +355,7 @@ function render(s){
     if (s.site)  c.push('<span class="mono">' + h(s.site) + '</span>');
     if (s.email) c.push('<span class="mono">' + h(s.email) + '</span>');
     $('contact').innerHTML = 'questions, ideas, show-offs &rarr; ' + c.join(' &middot; ');
+    $('plate').textContent = h(s.brand) + ' · unit ' + s.unit + ' · property of whoever’s holding it';
     if (s.led.kind == 3) $('ledhint').textContent = 'this build has no LED configured, so the buttons just ping the board.';
     else $('ledhint').textContent = 'the LED on GPIO ' + s.led.pin + ' is wired to these buttons. that round trip is phone → wifi → chip → light.';
     if (s.released) $('relmsg').textContent = 'already done for this device.';
@@ -277,13 +371,16 @@ function tick(){
     .then(function(){ setTimeout(tick, 3000); });
 }
 
-var SW = [[255,176,32],[255,40,40],[40,255,90],[40,120,255],[255,255,255],[255,0,200],[0,230,230]];
+var SW = [[255,170,40],[255,40,40],[40,255,90],[40,120,255],[255,255,255],[255,0,200],[0,230,230]];
 (function(){
   var html = '';
   SW.forEach(function(c){
     html += '<button class="sw" data-c="' + c.join(',') + '" style="background:rgb(' + c.join(',') + ')" onclick="led(\'fx=solid&r=' + c[0] + '&g=' + c[1] + '&b=' + c[2] + '\',this)"></button>';
   });
   $('swatches').innerHTML = html;
+  var st = document.createElement('style');
+  st.textContent = '@keyframes spin{from{filter:hue-rotate(0deg)}to{filter:hue-rotate(360deg)}}';
+  document.head.appendChild(st);
 })();
 function markSwatch(key){
   var b = document.querySelectorAll('.sw');

@@ -1,6 +1,6 @@
 # willreil-welcome
 
-**it's alive.** — a welcome app that lives on every ESP32-C6 you ship.
+**it's alive.** — a welcome app that lives on every ESP32-C6 you ship. themed like the board: blue soldermask, white silkscreen, gold pads.
 
 plug the board in → it broadcasts its own wifi (`WillReil-7F3A`) → the buyer joins with the password on the card → their phone pops the "sign in to network" sheet, hotel-wifi style → that sheet *is* this app, served straight from the chip. no internet needed, no app store, nothing to install.
 
@@ -13,7 +13,7 @@ plug the board in → it broadcasts its own wifi (`WillReil-7F3A`) → the buyer
 | **vitals · live** | chip, cores, MHz, flash, RAM, die temperature, uptime, who's connected, MAC, core + IDF versions. polls every 3 s. the dot goes red if the board drops. |
 | **say hi** | color swatches, rainbow, off — wired to the onboard LED. phone → wifi → chip → light. that's the "oh, it's real" moment. |
 | **flash your first program** | tabbed, step-by-step: Arduino IDE (board URL with a copy button, `ESP32C6 Dev Module`, USB CDC On Boot, Blink), PlatformIO (pioarduino), MicroPython, ESP-IDF. plus the "stuck on Connecting…" fix. |
-| **pins** | UART / I2C / SPI / BOOT / LED defaults — reported **by the firmware itself** from the board variant, so they always match what you compiled for. strapping-pin warning included. |
+| **pins** | a labeled drawing of the board (the LED in it mirrors the real one's color), plus UART / I2C / SPI / BOOT / LED pins reported **by the firmware itself** — the core's defaults, overridden by `BOARD_SDA` / `BOARD_SCL` so the page says `0/SDA · 14/SCL` like the silkscreen does. Qwiic note and strapping-pin warning included. |
 | **this wifi** | buyer can set their own password (saved to NVS, board restarts). hold BOOT 5 s → back to the card password. |
 | **stop the sign-in popup** | tells their phone the "sign-in" is done so it stops nagging; they stay connected and can revisit `http://4.3.2.1` any time. |
 
@@ -63,6 +63,7 @@ everything you'd ever touch is the block at the top of the `.ino`:
 | `HOSTNAME` | `http://willreil.local` |
 | `CONTACT_X` / `CONTACT_SITE` / `CONTACT_EMAIL` | footer. `""` hides one. |
 | `PER_UNIT_PASSWORD`, `FIXED_PASSWORD`, `UNIT_SECRET` | see above |
+| `BOARD_SDA`, `BOARD_SCL` | what the silkscreen says (0 / 14 on these boards). `-1` = the core's default. |
 | `LED_MODE`, `LED_PIN`, `LED_ACTIVE_LOW`, `LED_BRIGHTNESS` | `LED_MODE_AUTO` trusts the C6 devkit variant (WS2812 on GPIO 8). if your board puts the LED elsewhere, pick `LED_MODE_RGB` or `LED_MODE_PLAIN` + the pin. |
 | `AP_CHANNEL`, `AP_MAX_CLIENTS` | wifi |
 

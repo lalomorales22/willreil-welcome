@@ -78,6 +78,13 @@
 #define LED_BRIGHTNESS    64                   // RGB only, 0-255. 64 is plenty.
 
 #define BOOT_BTN          9                    // BOOT button on every C6 dev board
+
+// What the silkscreen says, not what the Arduino core assumes. Will's boards break
+// I2C out on 0/SDA + 14/SCL (and the Qwiic jack); the core's default is 6/7.
+// -1 = fall back to the core's default for the selected board.
+#define BOARD_SDA         0
+#define BOARD_SCL         14
+
 #define AP_CHANNEL        6
 #define AP_MAX_CLIENTS    8
 // ==========================================================================
@@ -353,7 +360,8 @@ static void handleStatus() {
     tempC, (unsigned)(millis() / 1000), (unsigned)WiFi.softAPgetStationNum(),
     (int)WiFi.channel(), WiFi.softAPmacAddress().c_str(),
     ESP_ARDUINO_VERSION_MAJOR, ESP_ARDUINO_VERSION_MINOR, ESP_ARDUINO_VERSION_PATCH, ESP.getSdkVersion(),
-    (int)TX, (int)RX, (int)SDA, (int)SCL, (int)MOSI, (int)MISO, (int)SCK, (int)SS, BOOT_BTN,
+    (int)TX, (int)RX, (BOARD_SDA >= 0 ? BOARD_SDA : (int)SDA), (BOARD_SCL >= 0 ? BOARD_SCL : (int)SCL),
+    (int)MOSI, (int)MISO, (int)SCK, (int)SS, BOOT_BTN,
     LED_KIND, lp, fx == FX_RAINBOW ? "rainbow" : "solid", solidR, solidG, solidB,
     customPw ? "true" : "false", isReleased(me) ? "true" : "false", me.toString().c_str());
   server.sendHeader("Cache-Control", "no-store");
