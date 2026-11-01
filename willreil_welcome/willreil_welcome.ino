@@ -50,6 +50,7 @@
 #include <esp_arduino_version.h>
 #include <mbedtls/sha256.h>
 #include <soc/soc_caps.h>
+#include <esp_mac.h>
 
 // ================================ CONFIG ==================================
 #define BRAND             "Reil Industries"
@@ -218,9 +219,12 @@ static void ledTick() {
 }
 
 // ============================ identity =====================================
-static String unitId() {                   // last two bytes of the factory MAC -> "7F3A"
-  uint64_t mac = ESP.getEfuseMac();
-  const uint8_t *m = (const uint8_t *)&mac;
+static String unitId() {                   // last two bytes of the wifi MAC -> "5EF0"
+  // Not ESP.getEfuseMac(): on the C6 (and H2) that is the 8-byte EUI-64, 98:a3:16:FF:FE:81:5e:f0,
+  // so bytes 4-5 came out "FE" + one byte and a whole batch of boards shared one network name.
+  // The 48-bit wifi MAC is the same on every chip, and on non-802.15.4 chips nothing changes.
+  uint8_t m[6];
+  esp_read_mac(m, ESP_MAC_WIFI_STA);
   char s[5];
   snprintf(s, sizeof s, "%02X%02X", m[4], m[5]);
   return String(s);

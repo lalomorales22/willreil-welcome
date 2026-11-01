@@ -40,6 +40,13 @@ python ship.py            # flashes the exported .bin, reads the label off the b
 
 (`labels.csv` holds every unit's password — it's git-ignored on purpose. keep it on the bench machine.)
 
+## network names
+
+the `XXXX` in `Reil-XXXX` is the last two bytes of the board's wifi MAC, so every board gets its own.
+(early builds read the C6's 8-byte EUI-64 instead, which made names come out `Reil-FE` + one byte and let
+a whole batch share one name. if you labeled boards with one of those, reflash and rewrite the SSID line on
+the card. the passwords didn't change.)
+
 ## how passwords work
 
 every board derives its own password from `sha256(UNIT_SECRET + factory MAC)` → 8 characters from an alphabet with no `0/O/1/I` confusion, split `XXXX-XXXX`. same firmware, different password per card, no database.
