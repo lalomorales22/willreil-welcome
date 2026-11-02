@@ -49,10 +49,12 @@ the card. the passwords didn't change.)
 
 ## how passwords work
 
-every board derives its own password from `sha256(UNIT_SECRET + factory MAC)` → 8 characters from an alphabet with no `0/O/1/I` confusion, split `XXXX-XXXX`. same firmware, different password per card, no database.
+every board makes up its own password the first time it starts: 8 characters from the chip's hardware random number generator, from an alphabet with no `0/O/1/I` confusion, split `XXXX-XXXX`. it's kept in the board's settings (NVS) and printed on the `LABEL` line, which is exactly what `ship.py` reads for the card. same firmware on every board, **nothing secret in the code**, no database: the repo, a `.bin` or a board you take apart tells nobody another board's password.
 
-- **change `UNIT_SECRET` once** before your first batch, then never again — old cards stop matching if you do.
-- want one password for everything instead? `#define PER_UNIT_PASSWORD 0` and set `FIXED_PASSWORD`.
+- reflashing the app keeps the password. erasing the whole flash makes a new one, so read the label again and print a new card.
+- want one password for everything instead? `#define PER_UNIT_PASSWORD 0` and set `FIXED_PASSWORD`, but that string is public if you push the code.
+
+> **boards flashed before 2026-11-01** used `sha256(UNIT_SECRET + MAC)` with the secret right in this repo, so their card passwords can be worked out from the MAC they broadcast. update them to this version and they make a fresh random password (read it off the serial label, print a new card), or the owner can set their own on the page (**05 · this wifi**).
 
 ## build
 
@@ -73,7 +75,7 @@ everything you'd ever touch is the block at the top of the `.ino`:
 | `SSID_PREFIX` | network name prefix (`Reil` → `Reil-7F3A`) |
 | `HOSTNAME` | `http://reil.local` |
 | `CONTACT_X` / `CONTACT_SITE` / `CONTACT_EMAIL` | footer. `""` hides one. |
-| `PER_UNIT_PASSWORD`, `FIXED_PASSWORD`, `UNIT_SECRET` | see above |
+| `PER_UNIT_PASSWORD`, `FIXED_PASSWORD` | see above |
 | `BOARD_SDA`, `BOARD_SCL` | what the silkscreen says (0 / 14 on these boards). `-1` = the core's default. |
 | `LED_MODE`, `LED_PIN`, `LED_ACTIVE_LOW`, `LED_BRIGHTNESS` | `LED_MODE_AUTO` trusts the C6 devkit variant (WS2812 on GPIO 8). if your board puts the LED elsewhere, pick `LED_MODE_RGB` or `LED_MODE_PLAIN` + the pin. |
 | `AP_CHANNEL`, `AP_MAX_CLIENTS` | wifi |

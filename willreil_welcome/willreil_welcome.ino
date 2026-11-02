@@ -30,9 +30,10 @@
     (ship.py in this folder does flash + label automatically, with a CSV log.)
 
   HOW PASSWORDS WORK
-    PER_UNIT_PASSWORD 1  -> every board derives its own password from its
-                            factory MAC + UNIT_SECRET (sha256). Same firmware
-                            on every board, different password on every card.
+    PER_UNIT_PASSWORD 1  -> every board makes up its own random password on
+                            its first start and keeps it. Same firmware on
+                            every board, nothing secret in it, a different
+                            password on every card.
     PER_UNIT_PASSWORD 0  -> every board uses FIXED_PASSWORD.
     Buyers can set their own password from the app (saved to NVS).
     Hold BOOT for 5 s while running -> forgets the custom password, back to card.
@@ -48,7 +49,6 @@
 #include <ESPmDNS.h>
 #include <Preferences.h>
 #include <esp_arduino_version.h>
-#include <mbedtls/sha256.h>
 #include <soc/soc_caps.h>
 #include <esp_mac.h>
 
@@ -61,11 +61,9 @@
 #define CONTACT_EMAIL     ""                   // e.g. "hi@reilindustries.com" ("" hides it)
 // (no double-quotes inside any of the strings above — they go straight into JSON)
 
-#define PER_UNIT_PASSWORD 1                    // 1 = unique password per board
-#define FIXED_PASSWORD    "reilindustries"       // only used when PER_UNIT_PASSWORD is 0
-#define UNIT_SECRET       "wri-batch-2026"     // salt for per-unit passwords.
-                                               // change it ONCE before the first batch,
-                                               // then never — or old cards stop matching.
+#define PER_UNIT_PASSWORD 1                    // 1 = each board makes its own random password, 0 = FIXED_PASSWORD for all
+#define FIXED_PASSWORD    "change-me-please"   // only with PER_UNIT_PASSWORD 0. careful: anything here is public if you push it
+
 
 // LED. AUTO = trust the board variant (C6 DevKit: WS2812 RGB on GPIO8).
 // If Will's own board puts the LED somewhere else, pick a mode + pin here.
@@ -230,19 +228,18 @@ static String unitId() {                   // last two bytes of the wifi MAC -> 
   return String(s);
 }
 
-static String derivedPassword() {          // sha256(UNIT_SECRET + mac) -> "7K3M-9PXZ"
-  uint64_t mac = ESP.getEfuseMac();
-  uint8_t in[sizeof(UNIT_SECRET) - 1 + sizeof mac];
-  memcpy(in, UNIT_SECRET, sizeof(UNIT_SECRET) - 1);
-  memcpy(in + sizeof(UNIT_SECRET) - 1, &mac, sizeof mac);
-  uint8_t h[32];
-  (void)mbedtls_sha256(in, sizeof in, h, 0);
+// The card password. Each board makes up its own the first time it starts: 8 characters from the
+// chip's hardware random number generator (called once the radio is on, which is what makes it truly
+// random), kept in NVS and printed on the LABEL line for the card. Nothing secret lives in this source,
+// so the code can be public and a copied .bin or a dumped board tells you nobody else's password.
+// (Before 2026-11-01 it was sha256(secret + MAC) with the secret in the repo: anyone could work it out.)
+static String cardPassword() {
+  String p = prefs.getString("upw", "");
+  if (p.length() == 9) return p;
   static const char A[] = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";   // 32 symbols, no 0/O/1/I
-  String p;
-  for (int i = 0; i < 8; i++) {
-    if (i == 4) p += '-';
-    p += A[h[i] & 31];
-  }
+  p = "";
+  for (int i = 0; i < 8; i++) { if (i == 4) p += '-'; p += A[esp_random() & 31]; }
+  prefs.putString("upw", p);
   return p;
 }
 
@@ -255,13 +252,16 @@ static void loadCreds() {
   if (custom.length() >= 8 && custom.length() <= 63) {
     apPass = custom; customPw = true;
   } else {
-#if PER_UNIT_PASSWORD
-    apPass = derivedPassword();
-#else
-    apPass = FIXED_PASSWORD;
-#endif
+    apPass = FIXED_PASSWORD;                 // PER_UNIT_PASSWORD: replaced by finishCreds() once the radio is up
     customPw = false;
   }
+}
+
+// call once the radio is on (WiFi.mode): that's when esp_random() is a true random source
+static void finishCreds() {
+#if PER_UNIT_PASSWORD
+  if (!customPw) apPass = cardPassword();
+#endif
 }
 
 static void printBanner() {
@@ -454,6 +454,7 @@ void setup() {
   WiFi.persistent(false);
   WiFi.onEvent(onWifiEvent);
   WiFi.mode(WIFI_AP);
+  finishCreds();
   WiFi.softAPsetHostname(HOSTNAME);
   WiFi.softAPConfig(portalIp, portalIp, AP_MASK);
   if (!WiFi.softAP(apSsid.c_str(), apPass.c_str(), AP_CHANNEL, 0, AP_MAX_CLIENTS)) {
